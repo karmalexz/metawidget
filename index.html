@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="http://metawidget.org/js/3.4/metawidget-core.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css"
+    />
+    <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+    <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+    <script src="./metawidget-jqueryui.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="metawidget-angular.min.js"></script>
+    <!-- <link rel="stylesheet" href="./style.css" /> -->
+  </head>
+  <body>
+    <h3>
+      This web page is using metawidget, users can enter the information and
+      click save, then the result will show in the console in the JSON format.
+    </h3>
+
+    
+    <div id="metawidget">
+        
+        <button onclick="save()">Save</button>
+    </div>
+    <script type="text/javascript">
+      var mw = new metawidget.Metawidget(
+        document.getElementById("metawidget"),
+        {
+            //inspectors,to make certain fields are required to be filled, and combining multiple inspection results by using CompositeInspector
+          inspector: new metawidget.inspector.CompositeInspector([
+            new metawidget.inspector.PropertyTypeInspector(),
+            function (toInspect, type, names) {
+              return {
+                properties: {
+                  firstname: {
+                    required: true,
+                  },
+                  lastname: {
+                    required: true,
+                  },
+                  email: {
+                    type: "string",
+                  },
+                  street: {
+                    type: "string",
+                    section: "Address",
+                    required: true,
+                  },
+                  suburb: {
+                    type: "string",
+                    section: "Address",
+                    required: true,
+                  },
+                  postcode: {
+                    type: "string",
+                    section: "Address",
+                    required: true,
+                  },
+                },
+              };
+            },
+          ]),
+          //controlling the layout
+          layout: new metawidget.jqueryui.layout.TabLayoutDecorator(
+            new metawidget.layout.TableLayout({ numberOfColumns: 2 })
+          ),
+        }
+      );
+      // user interface
+      mw.toInspect = {
+        firstname: "",
+        lastname: "",
+        age: 0,
+      };
+      mw.buildWidgets();
+
+      //save the data, and print them out on the console. 
+      function save() {
+        mw.getWidgetProcessor(function (widgetProcessor) {
+          return (
+            widgetProcessor instanceof
+            metawidget.widgetprocessor.SimpleBindingProcessor
+          );
+        }).save(mw);
+        console.log(mw.toInspect);
+      }
+    </script>
+  </body>
+</html>
